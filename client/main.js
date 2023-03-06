@@ -1,8 +1,8 @@
 const complimentBtn = document.getElementById("complimentButton");
 const fortuneBtn = document.getElementById("fortuneButton");
-const option1 = document.getElementById("option1")
-const fix = document.getElementById("fix")
-
+const quoteForm = document.querySelector('form')
+const quoteList = document.querySelector('#quotelist')
+const updateBtn = document.querySelector('#updateButton')
 
 
 const getCompliment = () => {
@@ -21,45 +21,47 @@ const getFortune = () => {
     });
 };
 
+const quoteCallback = ({ data }) => showQuotes(data)
 
-let quote = {
-    author: 'Ian Mckellan',
-    quote: '"All we have to decide is what to do with the time that is given us."'
-    
+const getQuote = () => axios.get("http://localhost:4000/api/quote/").then(quoteCallback)
+const createQuote = (body) => axios.post("http://localhost:4000/api/quote/", body).then(quoteCallback)
+const deleteQuote = id => axios.delete(`http://localhost:4000/api/quote/${id}`).then(quoteCallback)
+const updateQuote = id => axios.put(`http://localhost:4000/api/quote/${id}`).then(quoteCallback)
+
+const sumbitQuote = (e) => {
+    e.preventDefault()
+
+    let author = document.querySelector('#author')
+    let quote = document.querySelector('#quote')
+    let newList = {
+        author: author.value,
+        quote: quote.value
+    }
+    createQuote(newList)
+
+}
+const writeQuote = (param) => {
+    const newQuote = document.createElement('div')
+    newQuote.innerHTML = `<h2>${param.author} once said, "${param.quote}"</h2>
+    <button onclick="deleteQuote(${param.id})">x</button>
+    `
+    quoteList.appendChild(newQuote)
 }
 
-let newQuote = {
-    author: 'Gandalf',
-    quote: '"All we have to decide is what to do with the time that is given us."'
+const showQuotes = (array) => {
+    quoteList.innerHTML = ""
+    for(let i = 0; i < array.length; i++) {
+        writeQuote(array[i])
+    }
 }
-
-const selectQuote = () => {
-    axios.post("http://localhost:4000/api/quote/", quote)
-        .then(res => {
-            console.log(res.data)
-            const data = res.data
-            const h3 = document.createElement("h3")
-            h3.innerText = data
-            document.body.appendChild(h3)
-        })
-}
-
-const updateQuote = () => {
-    axios.put("http://localhost:4000/api/quote/", newQuote)
-        .then(res => {
-            console.log(res.data)
-            const data = res.data
-            const h3 = document.createElement("h3")
-            h3.innerText = data
-            document.body.appendChild(h3)
-        })
-}
-
-
+       
+quoteForm.addEventListener('submit', sumbitQuote)
+getQuote()
 
 
 complimentBtn.addEventListener('click', getCompliment);
 fortuneBtn.addEventListener('click', getFortune);
-option1.addEventListener('click', selectQuote, {once:true})
-fix.addEventListener('click', updateQuote)
+updateBtn.addEventListener('click', updateQuote)
+
+
 

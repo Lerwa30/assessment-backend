@@ -6,12 +6,20 @@
   <body class="container">
     <button id="complimentButton">Get a Compliment</button>
     <button id="fortuneButton">Get a Fortune</button>
-    <button id="option1">Get Quote</button>
-    <button id="fix">Update Quote</button>
+    <button id="updateButton">Update our Quote</button>
+    
+    <form>
+      <input type="text" id="author" placeholder="Suggest an author">
+      <input type="text" id="quote" placeholder="What did they say?">
+      <button>Submit your quote!</button>
+    </form>
+    
+
+    <section id="quotelist"></section>
 
     
    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-    <script src="main.js"></script>
+   <script src="main.js"></script>
     
   </body>
 </html>
